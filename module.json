@@ -1,15 +1,16 @@
 {
-    "disableAutoUpdate": true,
-    "name": "Bosslogger",
+    "disableAutoUpdate": false,
+    "name": "BossLogger",
     "author": "tera8213",
     "description": "Tera proxy module for logging boss interactions.",
     "options": {
-        "niceName": "Bosslogger",
-        "guiName": "Bosslogger",
+        "niceName": "BossLogger",
+        "guiName": "BossLogger",
         "settingsVersion": 1,
         "settingsFile": "config.json",
-        "settingsMigrator": "settings_migrator.js"
+        "settingsMigrator": "settings_migrator.js",
+        "reloadable": true
     },
-    "servers": ["https://raw.githubusercontent.com/Tera-Shiraneko/boss-skill-logger/master/"],
-    "supportUrl": "https://github.com/Tera-Shiraneko/boss-skill-logger/issues"
+    "servers": ["https://raw.githubusercontent.com/dev8213/boss-skill-logger/master/"],
+    "supportUrl": "https://github.com/dev8213/boss-skill-logger/issues"
 }
