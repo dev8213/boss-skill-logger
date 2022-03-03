@@ -1,0 +1,15 @@
+{
+    "disableAutoUpdate": true,
+    "name": "Bosslogger",
+    "author": "tera8213",
+    "description": "Tera proxy module for logging boss interactions.",
+    "options": {
+        "niceName": "Bosslogger",
+        "guiName": "Bosslogger",
+        "settingsVersion": 1,
+        "settingsFile": "config.json",
+        "settingsMigrator": "settings_migrator.js"
+    },
+    "servers": ["https://raw.githubusercontent.com/Tera-Shiraneko/boss-skill-logger/master/"],
+    "supportUrl": "https://github.com/Tera-Shiraneko/boss-skill-logger/issues"
+}

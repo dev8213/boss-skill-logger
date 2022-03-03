@@ -1,0 +1,25 @@
+{
+    "version": 1,
+    "data": {
+        "logabnormal": false,
+        "dungeonmessage": false,
+        "questballoon": false,
+        "writelog": false,
+        "logboss": false,
+        "blacklist": [
+            31020,
+            601611,
+            100700,
+            401704,
+            10155200,
+            10155201,
+            10155202,
+            10155204,
+            10155205,
+            10155206,
+            10155207,
+            10153510
+        ],
+        "whitelist": "1000,2000,3000,81101,1001,1002"
+    }
+}

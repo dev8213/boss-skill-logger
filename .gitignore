@@ -1,0 +1,9 @@
+manifest-generator.bat
+manifest-generator.js
+module.config.json
+.eslintrc.json
+package.json
+.backup/**
+.parser/**
+node_modules/**
+bosslogs/**
