@@ -2,10 +2,10 @@
     "files": {
         "Readme.md": "171aeb79f4c205075b07d49c0b225ed0d2c205a439175faf8bad933275aa5e9c",
         "format.js": "a0d34cfb7ab631177fbb0302e06a5858155db60afc459cd14f50b000afa2463e",
-        "index.js": "e9c78ba194b7d67bee10acda757e958a877e067dc8e1e9f2a3f4bbda5adc7bf5",
+        "index.js": "a93a9617197068822dc375bc092b1d2d75c7030820be6b71e247aee3058409bb",
+        "lib/abnormalities.js": "a710e47a93bcbaacd40fa9749cff8c5943cced3c8e567ea8dad2b1fdce5782d5",
         "module.json": "1bff50e29fa59be58a080a000473559cfc70449d11e0f775ad7c5c4c78879c8b",
-        "settings_migrator.js": "9be9e61cf2c49ceb3ca6d2877b46d40dcb155b4f73153023ac6ad5c56456c9f7",
-        "settings_structure.js": "5443396628ff6ccc7d4b11137cdc72d2bfe61cb2f2368542a49efd66278ddf1f",
-        "whitelist.js": "07d212d30abb0af3093ab6a6292f45b439bd312905c34c045f3f995efbb31b3c"
+        "settings_migrator.js": "8874b2e5b0eace0c335d11189a7eb81d82b73bd42c218eef8b989ca506721128",
+        "settings_structure.js": "5443396628ff6ccc7d4b11137cdc72d2bfe61cb2f2368542a49efd66278ddf1f"
     }
 }

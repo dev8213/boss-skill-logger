@@ -1,7 +1,8 @@
 String.prototype.clr = function(hexColor) {return `<font color="#${hexColor}">${this}</font>`};
 
 const SettingsUI = require('tera-mod-ui').Settings
-const whitelist = require('./whitelist')
+const default_hook = {filter: {fake: false}}
+const baselist = require('./lib/abnormalities')
 const format = require('./format.js')
 const path = require('path')
 const fs = require('fs')
@@ -68,6 +69,24 @@ module.exports = function Bosslogger(mod) {
             mod.command.message(`Logfile cannot be created you need to activate writelog function first.`);
         }
     })
+	function togglemode() {
+        if (mod.settings.writelog) {
+            if (mod.settings.logboss || mod.settings.logabnormal || mod.settings.dungeonmessage) {
+                let filename = path.join(logfolder, zone+'_'+Date.now()+'.js');
+                stream = fs.createWriteStream(filename, {
+                    flags: 'a'
+                });
+            } else {
+                if (stream) {
+                    try {
+                        stream.end();
+                    } catch (e) {
+                        mod.log(e);
+                    }
+                }
+            }
+        }
+    }
 
     
 	// hooks
@@ -142,7 +161,7 @@ module.exports = function Bosslogger(mod) {
         }
     })
 	mod.hook('S_ABNORMALITY_BEGIN', 5, (event) => {
-		if (!mod.settings.logabnormal || whitelist[event.id] || mod.settings.blacklist.includes(event.id)) return
+		if (!mod.settings.logabnormal || baselist[event.id] || mod.settings.blacklist.includes(event.id)) return
         if (!mod.settings.writelog) {
 			if (event.target === bossid || mod.game.me.is(event.target)) {
 				sendchat('Abnormality: '+`${event.id}`.clr('00e8ff')+' Stacks: '+`${event.stacks}`.clr('00ffc5'))
@@ -155,7 +174,7 @@ module.exports = function Bosslogger(mod) {
         }
     })
 	mod.hook('S_ABNORMALITY_REFRESH', 2, (event) => {
-		if (!mod.settings.logabnormal || whitelist[event.id] || mod.settings.blacklist.includes(event.id)) return
+		if (!mod.settings.logabnormal || baselist[event.id] || mod.settings.blacklist.includes(event.id)) return
 		if (!mod.settings.writelog) {
 			if (event.target === bossid || mod.game.me.is(event.target)) {
 				sendchat('Abnormality: '+`${event.id}`.clr('00e8ff')+' Stacks: '+`${event.stacks}`.clr('00ffc5'))
@@ -176,18 +195,18 @@ module.exports = function Bosslogger(mod) {
         }
     })
 	mod.hook('S_ACTION_STAGE', 9, (event) => {
-        if (!mod.settings.logboss || !mod.settings.whitelist.includes(event.templateId)) return
+        if (!mod.settings.logboss || !mod.settings.baselist.includes(event.templateId)) return
         if (event.stage == 0) sendchat('Action Stage: '+`${event.skill}`.clr('ffe800')+' Skill ID: '+`${event.skill.id}`.clr('ff8000')+' HP: '+`${bosshp}`.clr('17ff00')+'%'+'.')
         if (mod.settings.writelog) {
-            if (mod.settings.whitelist.includes(event.templateId)) {
+            if (mod.settings.baselist.includes(event.templateId)) {
                 stream.write(gettime()+' |S_ACTION_STAGE| >> '+'source: '+getId(event.gameId)+' skill: '+event.skill.id+' stage: '+event.stage+' hp: '+bosshp+' loc: '+loc(event.loc)+' dest: '+loc(event.dest)+' w: '+round(event.w)+' anim: '+anim(event.animSeq)+'\n')
             }
         }
     })
 	mod.hook('S_ACTION_END', 5, (event) => {
-        if (!mod.settings.logboss || !mod.settings.whitelist.includes(event.templateId)) return
+        if (!mod.settings.logboss || !mod.settings.baselist.includes(event.templateId)) return
         if (mod.settings.writelog) {
-            if (mod.settings.whitelist.includes(event.templateId)) {
+            if (mod.settings.baselist.includes(event.templateId)) {
                 stream.write(gettime()+' |S_ACTION_END| >> '+'source: '+getId(event.gameId)+' skill: '+event.skill.id+' loc: '+loc(event.loc)+' w: '+round(event.w)+ ' type: '+event.type+'\n')
             }
         }
@@ -195,7 +214,7 @@ module.exports = function Bosslogger(mod) {
 	mod.hook('S_SPAWN_NPC', 12, (event) => {
         if (!mod.settings.logboss) return
         if (mod.settings.writelog && mod.settings.logboss) {
-            if (mod.settings.whitelist.includes(event.templateId)) {
+            if (mod.settings.baselist.includes(event.templateId)) {
                 stream.write(gettime()+' |S_SPAWN_NPC| >> '+'source: '+getId(event.gameId)+' villager: '+event.villager+' visible: '+event.visible+' loc: '+loc(event.loc)+'\n')
             }
         }
@@ -203,7 +222,7 @@ module.exports = function Bosslogger(mod) {
 	mod.hook('S_DESPAWN_NPC', 3, (event) => {
         if (!mod.settings.logboss) return
         if (mod.settings.writelog && mod.settings.logboss) {
-            if (mod.settings.whitelist.includes(event.templateId)) {
+            if (mod.settings.baselist.includes(event.templateId)) {
                 stream.write(gettime()+' |S_DESPAWN_NPC| >> '+'source: '+getId(event.gameId)+' type: '+event.type+' loc: '+loc(event.loc)+'\n')
             }
         }
@@ -256,27 +275,9 @@ module.exports = function Bosslogger(mod) {
 		else if (mod.game.me.is(obj)) return player.name
 		else return obj
 	}
-	function togglemode() {
-        if (mod.settings.writelog) {
-            if (mod.settings.logboss || mod.settings.logabnormal || mod.settings.dungeonmessage) {
-                let filename = path.join(logfolder, zone+'_'+Date.now()+'.js');
-                stream = fs.createWriteStream(filename, {
-                    flags: 'a'
-                });
-            } else {
-                if (stream) {
-                    try {
-                        stream.end();
-                    } catch (e) {
-                        mod.log(e);
-                    }
-                }
-            }
-        }
-    }
-    let ui = null
+	let ui = null
     if (global.TeraProxy.GUIMode) {
-        ui = new SettingsUI(mod, require('./settings_structure'), mod.settings, {height: 350}, {alwaysOnTop: true});
+        ui = new SettingsUI(mod, require('./settings_structure'), mod.settings, {height: 300}, {alwaysOnTop: true});
         ui.on('update', settings => {mod.settings = settings;});
 
         this.destructor = () => {
