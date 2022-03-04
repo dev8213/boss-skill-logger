@@ -15,8 +15,10 @@ module.exports = function Bosslogger(mod) {
 
     let createlog = false,
 		servants = new Set(),
+		entities = new Map(),
 		zone,
-        bossid, bosshp
+        bossid,
+		bosshp
 
     var stream;
 
