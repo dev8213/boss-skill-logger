@@ -3,8 +3,8 @@ manifest-generator.js
 module.config.json
 .eslintrc.json
 package.json
+config.json
 .backup/**
 .parser/**
 node_modules/**
 bosslogs/**
-config.json
