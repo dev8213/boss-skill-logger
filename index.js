@@ -253,7 +253,7 @@ module.exports = function Bosslogger(mod) {
 		if (entity.mobs[obj.toString()]) return parseInt(`${entity.mobs[obj.toString()].huntingZoneId}${entity.mobs[obj.toString()].templateId}`)
 		else if (entity.npcs[obj.toString()]) return parseInt(`${entity.npcs[obj.toString()].huntingZoneId}${entity.npcs[obj.toString()].templateId}`)
 		else if (entity.players[obj.toString()]) return entity.players[obj.toString()].name
-		else if (mod.game.me.is(event.gameId)) return player.name
+		else if (mod.game.me.is(obj)) return player.name
 		else return obj
 	}
 	function togglemode() {
