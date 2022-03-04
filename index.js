@@ -3,7 +3,6 @@ String.prototype.clr = function(hexColor) {return `<font color="#${hexColor}">${
 const SettingsUI = require('tera-mod-ui').Settings
 const default_hook = {filter: {fake: false}}
 const baselist = require('./lib/abnormalities')
-const format = require('./format.js')
 const path = require('path')
 const fs = require('fs')
 const logfolder = path.join(__dirname, 'bosslogs')

@@ -7,3 +7,4 @@ package.json
 .parser/**
 node_modules/**
 bosslogs/**
+config.json
