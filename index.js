@@ -128,7 +128,7 @@ module.exports = function Bosslogger(mod) {
         if(event.enraged) {
             if(!entity.get('enraged'))
                 if (mod.settings.writelog) {
-					stream.write(gettime()+' |S_NPC_STATUS| >> '+'source: '+getId(event.gameId)+' enrage: true'+' duration: '+event.remainingEnrageTime+'\n')
+					stream.write(gettime()+' |S_NPC_STATUS| >> '+'source: '+getId(event.gameId)+' enrage: true'+' duration: '+round(event.remainingEnrageTime)+'s\n')
 				}
 			entity.set('enraged', true)
         } else {
@@ -194,18 +194,18 @@ module.exports = function Bosslogger(mod) {
         }
     })
 	mod.hook('S_ACTION_STAGE', 9, (event) => {
-        if (!mod.settings.logboss || !mod.settings.baselist.includes(event.templateId)) return
+        if (!mod.settings.logboss || !mod.settings.whitelist.includes(event.templateId)) return
         if (event.stage == 0) sendchat('Action Stage: '+`${event.skill}`.clr('ffe800')+' Skill ID: '+`${event.skill.id}`.clr('ff8000')+' HP: '+`${bosshp}`.clr('17ff00')+'%'+'.')
         if (mod.settings.writelog) {
-            if (mod.settings.baselist.includes(event.templateId)) {
+            if (mod.settings.whitelist.includes(event.templateId)) {
                 stream.write(gettime()+' |S_ACTION_STAGE| >> '+'source: '+getId(event.gameId)+' skill: '+event.skill.id+' stage: '+event.stage+' hp: '+bosshp+' loc: '+loc(event.loc)+' dest: '+loc(event.dest)+' w: '+round(event.w)+' anim: '+anim(event.animSeq)+'\n')
             }
         }
     })
 	mod.hook('S_ACTION_END', 5, (event) => {
-        if (!mod.settings.logboss || !mod.settings.baselist.includes(event.templateId)) return
+        if (!mod.settings.logboss || !mod.settings.whitelist.includes(event.templateId)) return
         if (mod.settings.writelog) {
-            if (mod.settings.baselist.includes(event.templateId)) {
+            if (mod.settings.whitelist.includes(event.templateId)) {
                 stream.write(gettime()+' |S_ACTION_END| >> '+'source: '+getId(event.gameId)+' skill: '+event.skill.id+' loc: '+loc(event.loc)+' w: '+round(event.w)+ ' type: '+event.type+'\n')
             }
         }
@@ -213,7 +213,7 @@ module.exports = function Bosslogger(mod) {
 	mod.hook('S_SPAWN_NPC', 12, (event) => {
         if (!mod.settings.logboss) return
         if (mod.settings.writelog && mod.settings.logboss) {
-            if (mod.settings.baselist.includes(event.templateId)) {
+            if (mod.settings.whitelist.includes(event.templateId)) {
                 stream.write(gettime()+' |S_SPAWN_NPC| >> '+'source: '+getId(event.gameId)+' villager: '+event.villager+' visible: '+event.visible+' loc: '+loc(event.loc)+'\n')
             }
         }
@@ -221,7 +221,7 @@ module.exports = function Bosslogger(mod) {
 	mod.hook('S_DESPAWN_NPC', 3, (event) => {
         if (!mod.settings.logboss) return
         if (mod.settings.writelog && mod.settings.logboss) {
-            if (mod.settings.baselist.includes(event.templateId)) {
+            if (mod.settings.whitelist.includes(event.templateId)) {
                 stream.write(gettime()+' |S_DESPAWN_NPC| >> '+'source: '+getId(event.gameId)+' type: '+event.type+' loc: '+loc(event.loc)+'\n')
             }
         }
