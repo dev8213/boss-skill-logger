@@ -127,13 +127,13 @@ module.exports = function Bosslogger(mod) {
         const entity = getEntity(event.gameId)
         if(event.enraged) {
             if(!entity.get('enraged'))
-                if (mod.settings.writelog) {
+                if (mod.settings.writelog && stream) {
 					stream.write(gettime()+' |S_NPC_STATUS| >> '+'source: '+getId(event.gameId)+' enrage: true'+' duration: '+round(event.remainingEnrageTime,1000)+'s\n')
 				}
 			entity.set('enraged', true)
         } else {
             if(entity.get('enraged'))
-                if (mod.settings.writelog) {
+                if (mod.settings.writelog && stream) {
 					stream.write(gettime()+' |S_NPC_STATUS| >> '+'source: '+getId(event.gameId)+' enrage: false'+'\n')
 				}
             entity.set('enraged', false)
@@ -145,7 +145,7 @@ module.exports = function Bosslogger(mod) {
         if (!mod.settings.writelog) {
 			sendchat('Message: '+`${event.message}`.clr('ff00e8')+'.')
         }
-        if (mod.settings.writelog) {
+        if (mod.settings.writelog && stream) {
             stream.write(gettime()+' |S_DUNGEON_EVENT_MESSAGE| >> '+'message: '+event.message+' source: '+event.source+'.'+'\n')
         }
     })
@@ -155,7 +155,7 @@ module.exports = function Bosslogger(mod) {
 		if (!mod.settings.writelog) {
 			sendchat('Balloon: '+`${event.message}`.clr('ff00e8')+'.')
         }
-        if (mod.settings.writelog) {
+        if (mod.settings.writelog && stream) {
             stream.write(gettime()+' |S_QUEST_BALLOON| >> '+'message: '+event.message+' source: '+event.source+'.'+'\n')
         }
     })
@@ -166,7 +166,7 @@ module.exports = function Bosslogger(mod) {
 				sendchat('Abnormality: '+`${event.id}`.clr('00e8ff')+' Stacks: '+`${event.stacks}`.clr('00ffc5'))
 			}
 		}
-        if (mod.settings.writelog) {
+        if (mod.settings.writelog && stream) {
             if (event.target === bossid || event.source === bossid || event.source === 0n || (!mod.game.me.is(event.source) && mod.game.me.is(event.target))) {
 			     stream.write(gettime()+' |S_ABNORMALITY_BEGIN| >> '+'id: '+event.id+' Duration: '+round(event.duration,1000)+'s stacks: '+event.stacks+' source: '+getId(event.source)+' target: '+getId(event.target)+'\n')
             }
@@ -179,7 +179,7 @@ module.exports = function Bosslogger(mod) {
 				sendchat('Abnormality: '+`${event.id}`.clr('00e8ff')+' Stacks: '+`${event.stacks}`.clr('00ffc5'))
 			}
 		}
-        if (mod.settings.writelog) {
+        if (mod.settings.writelog && stream) {
             if (event.target === bossid || mod.game.me.is(event.target)) {
 			     stream.write(gettime()+' |S_ABNORMALITY_REFRESH| >> '+'id: '+event.id+' duration: '+round(event.duration,1000)+'s stacks: '+event.stacks+' target: '+getId(event.target)+'\n')
             }
@@ -187,7 +187,7 @@ module.exports = function Bosslogger(mod) {
     })
 	mod.hook('S_CREATURE_ROTATE', 2, (event) => {
 		if (!mod.settings.logabnormal) return
-        if (mod.settings.writelog) {
+        if (mod.settings.writelog && stream) {
             if (event.gameId === bossid) {
 			     stream.write(gettime()+' |S_CREATURE_ROTATE| >> '+'source: '+getId(event.gameId)+' time: '+event.time+'\n')
             }
@@ -196,7 +196,7 @@ module.exports = function Bosslogger(mod) {
 	mod.hook('S_ACTION_STAGE', 9, (event) => {
         if (!mod.settings.logboss || !mod.settings.whitelist.includes(event.templateId)) return
         if (event.stage == 0) sendchat('Action Stage: '+`${event.skill}`.clr('ffe800')+' Skill ID: '+`${event.skill.id}`.clr('ff8000')+' HP: '+`${bosshp}`.clr('17ff00')+'%'+'.')
-        if (mod.settings.writelog) {
+        if (mod.settings.writelog && stream) {
             if (mod.settings.whitelist.includes(event.templateId)) {
                 stream.write(gettime()+' |S_ACTION_STAGE| >> '+'source: '+getId(event.gameId)+' skill: '+event.skill.id+' stage: '+event.stage+' hp: '+bosshp+' loc: '+loc(event.loc)+' dest: '+loc(event.dest)+' w: '+round(event.w,1)+' anim: '+anim(event.animSeq)+'\n')
             }
@@ -204,7 +204,7 @@ module.exports = function Bosslogger(mod) {
     })
 	mod.hook('S_ACTION_END', 5, (event) => {
         if (!mod.settings.logboss || !mod.settings.whitelist.includes(event.templateId)) return
-        if (mod.settings.writelog) {
+        if (mod.settings.writelog && stream) {
             if (mod.settings.whitelist.includes(event.templateId)) {
                 stream.write(gettime()+' |S_ACTION_END| >> '+'source: '+getId(event.gameId)+' skill: '+event.skill.id+' loc: '+loc(event.loc)+' w: '+round(event.w,1)+ ' type: '+event.type+'\n')
             }
