@@ -114,13 +114,13 @@ module.exports = function Bosslogger(mod) {
 	})
 	mod.hook('S_BOSS_GAGE_INFO', 3, (event) => {
 		if (zone == 9711) return
-        bosshp = Math.floor((Number.parseInt(event.curHp) / Number.parseInt(event.maxHp)) * 10000) / 100
+        bosshp = Math.floor((Number(event.curHp) / Number(event.maxHp)) * 10000) / 100
         bossid = event.id
     });
 	mod.hook('S_SHOW_HP', 3, (event) => {
 		if (zone != 9711) return
 		if (event.maxHp < 9999999999) return
-        bosshp = Math.floor((Number.parseInt(event.curHp) / Number.parseInt(event.maxHp)) * 10000) / 100
+        bosshp = Math.floor((Number(event.curHp) / Number(event.maxHp)) * 10000) / 100
         bossid = event.gameId
     })
 	mod.hook('S_NPC_STATUS', 2, (event) => {
@@ -128,7 +128,7 @@ module.exports = function Bosslogger(mod) {
         if(event.enraged) {
             if(!entity.get('enraged'))
                 if (mod.settings.writelog) {
-					stream.write(gettime()+' |S_NPC_STATUS| >> '+'source: '+getId(event.gameId)+' enrage: true'+' duration: '+round(event.remainingEnrageTime)+'s\n')
+					stream.write(gettime()+' |S_NPC_STATUS| >> '+'source: '+getId(event.gameId)+' enrage: true'+' duration: '+round(event.remainingEnrageTime,1000)+'s\n')
 				}
 			entity.set('enraged', true)
         } else {
@@ -168,7 +168,7 @@ module.exports = function Bosslogger(mod) {
 		}
         if (mod.settings.writelog) {
             if (event.target === bossid || event.source === bossid || event.source === 0n || (!mod.game.me.is(event.source) && mod.game.me.is(event.target))) {
-			     stream.write(gettime()+' |S_ABNORMALITY_BEGIN| >> '+'id: '+event.id+' Duration: '+round(event.duration)+'s stacks: '+event.stacks+' source: '+getId(event.source)+' target: '+getId(event.target)+'\n')
+			     stream.write(gettime()+' |S_ABNORMALITY_BEGIN| >> '+'id: '+event.id+' Duration: '+round(event.duration,1000)+'s stacks: '+event.stacks+' source: '+getId(event.source)+' target: '+getId(event.target)+'\n')
             }
         }
     })
@@ -181,7 +181,7 @@ module.exports = function Bosslogger(mod) {
 		}
         if (mod.settings.writelog) {
             if (event.target === bossid || mod.game.me.is(event.target)) {
-			     stream.write(gettime()+' |S_ABNORMALITY_REFRESH| >> '+'id: '+event.id+' duration: '+round(event.duration)+'s stacks: '+event.stacks+' target: '+getId(event.target)+'\n')
+			     stream.write(gettime()+' |S_ABNORMALITY_REFRESH| >> '+'id: '+event.id+' duration: '+round(event.duration,1000)+'s stacks: '+event.stacks+' target: '+getId(event.target)+'\n')
             }
         }
     })
@@ -198,7 +198,7 @@ module.exports = function Bosslogger(mod) {
         if (event.stage == 0) sendchat('Action Stage: '+`${event.skill}`.clr('ffe800')+' Skill ID: '+`${event.skill.id}`.clr('ff8000')+' HP: '+`${bosshp}`.clr('17ff00')+'%'+'.')
         if (mod.settings.writelog) {
             if (mod.settings.whitelist.includes(event.templateId)) {
-                stream.write(gettime()+' |S_ACTION_STAGE| >> '+'source: '+getId(event.gameId)+' skill: '+event.skill.id+' stage: '+event.stage+' hp: '+bosshp+' loc: '+loc(event.loc)+' dest: '+loc(event.dest)+' w: '+round(event.w)+' anim: '+anim(event.animSeq)+'\n')
+                stream.write(gettime()+' |S_ACTION_STAGE| >> '+'source: '+getId(event.gameId)+' skill: '+event.skill.id+' stage: '+event.stage+' hp: '+bosshp+' loc: '+loc(event.loc)+' dest: '+loc(event.dest)+' w: '+round(event.w,1)+' anim: '+anim(event.animSeq)+'\n')
             }
         }
     })
@@ -206,7 +206,7 @@ module.exports = function Bosslogger(mod) {
         if (!mod.settings.logboss || !mod.settings.whitelist.includes(event.templateId)) return
         if (mod.settings.writelog) {
             if (mod.settings.whitelist.includes(event.templateId)) {
-                stream.write(gettime()+' |S_ACTION_END| >> '+'source: '+getId(event.gameId)+' skill: '+event.skill.id+' loc: '+loc(event.loc)+' w: '+round(event.w)+ ' type: '+event.type+'\n')
+                stream.write(gettime()+' |S_ACTION_END| >> '+'source: '+getId(event.gameId)+' skill: '+event.skill.id+' loc: '+loc(event.loc)+' w: '+round(event.w,1)+ ' type: '+event.type+'\n')
             }
         }
     })
@@ -244,8 +244,8 @@ module.exports = function Bosslogger(mod) {
             msg
         );
     }
-	function round(num) {
-		return Math.round((parseInt(num)/1000) * 100) / 100
+	function round(num,dvd) {
+		return Math.round((Number(num)/dvd) * 100) / 100
     }
 	function anim(num) {
 		if (num.length === 0) return 0
@@ -268,8 +268,9 @@ module.exports = function Bosslogger(mod) {
         return entities.get(id)
     }
 	function getId(obj) {
-		if (entity.mobs[obj.toString()]) return parseInt(`${entity.mobs[obj.toString()].huntingZoneId}${entity.mobs[obj.toString()].templateId}`)
-		else if (entity.npcs[obj.toString()]) return parseInt(`${entity.npcs[obj.toString()].huntingZoneId}${entity.npcs[obj.toString()].templateId}`)
+		if (entity.mobs[obj.toString()]) return Number(`${entity.mobs[obj.toString()].huntingZoneId}${entity.mobs[obj.toString()].templateId}`)
+		if (entity.mobs[obj.toString()]) return Number(`${entity.mobs[obj.toString()].huntingZoneId}${entity.mobs[obj.toString()].templateId}`)
+		else if (entity.npcs[obj.toString()]) return Number(`${entity.npcs[obj.toString()].huntingZoneId}${entity.npcs[obj.toString()].templateId}`)
 		else if (entity.players[obj.toString()]) return entity.players[obj.toString()].name
 		else if (mod.game.me.is(obj)) return player.name
 		else return obj
