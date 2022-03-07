@@ -124,6 +124,7 @@ module.exports = function Bosslogger(mod) {
         bossid = event.gameId
     })
 	mod.hook('S_NPC_STATUS', 2, (event) => {
+		if (!mod.settings.logboss) return
         const entity = getEntity(event.gameId)
         if(event.enraged) {
             if(!entity.get('enraged'))
@@ -138,6 +139,16 @@ module.exports = function Bosslogger(mod) {
 				}
             entity.set('enraged', false)
         }
+    })
+	mod.hook('S_CREATURE_LIFE', 3, (event) => {
+		if (!mod.settings.logboss) return
+		const name = null
+		if (player.isMe(event.gameId)) name = player.name
+		else if (player.playersInParty.has(event.gameId)) name = entity.players[obj.toString()].name
+		else return
+		if (mod.settings.writelog && stream) {
+			stream.write(gettime()+' |S_CREATURE_LIFE| >> '+'name: '+name+' status: '+event.alive?'resurrected':'dead'+'\n')
+		}
     })
 	mod.hook('S_DUNGEON_EVENT_MESSAGE', 2, (event) => {
 		if (!mod.settings.dungeonmessage) return;
