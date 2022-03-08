@@ -142,7 +142,7 @@ module.exports = function Bosslogger(mod) {
     })
 	mod.hook('S_CREATURE_LIFE', 3, (event) => {
 		if (!mod.settings.logboss) return
-		const name = null
+		let name = null
 		if (player.isMe(event.gameId)) name = player.name
 		else if (player.playersInParty.has(event.gameId)) name = entity.players[obj.toString()].name
 		else return
