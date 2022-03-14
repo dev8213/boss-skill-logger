@@ -147,7 +147,7 @@ module.exports = function Bosslogger(mod) {
 		else if (player.playersInParty.has(event.gameId)) name = entity.players[event.gameId.toString()].name
 		else return
 		if (mod.settings.writelog && stream) {
-			stream.write(gettime()+' |S_CREATURE_LIFE| >> '+'name: '+name+' status: '+event.alive?'resurrected':'dead'+'\n')
+			stream.write(gettime()+' |S_CREATURE_LIFE| >> '+'name: '+name+' status: '+(event.alive?'resurrected':'dead')+'\n')
 		}
     })
 	mod.hook('S_DUNGEON_EVENT_MESSAGE', 2, (event) => {
