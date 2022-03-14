@@ -288,7 +288,7 @@ module.exports = function Bosslogger(mod) {
 	}
 	let ui = null
     if (global.TeraProxy.GUIMode) {
-        ui = new SettingsUI(mod, require('./settings_structure'), mod.settings, {height: 300}, {alwaysOnTop: true});
+        ui = new SettingsUI(mod, require('./settings_structure'), mod.settings, {height: 350}, {alwaysOnTop: true});
         ui.on('update', settings => {mod.settings = settings;});
 
         this.destructor = () => {
