@@ -144,7 +144,7 @@ module.exports = function Bosslogger(mod) {
 		if (!mod.settings.logboss) return
 		let name = null
 		if (player.isMe(event.gameId)) name = player.name
-		else if (player.playersInParty.has(event.gameId)) name = entity.players[obj.toString()].name
+		else if (player.playersInParty.has(event.gameId)) name = entity.players[event.gameId.toString()].name
 		else return
 		if (mod.settings.writelog && stream) {
 			stream.write(gettime()+' |S_CREATURE_LIFE| >> '+'name: '+name+' status: '+event.alive?'resurrected':'dead'+'\n')
