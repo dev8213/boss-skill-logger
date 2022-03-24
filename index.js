@@ -24,8 +24,8 @@ module.exports = function Bosslogger(mod) {
 
 	// commands
     mod.command.add('logboss', () => {
-        if (ui) {
-            ui.show()
+        if (gui) {
+            showGui()
         } else {
             mod.settings.logboss = !mod.settings.logboss
             mod.command.message(`Boss skill logger is now ${mod.settings.logboss ? "enabled" : "disabled"}.`)
@@ -286,16 +286,27 @@ module.exports = function Bosslogger(mod) {
 		else if (mod.game.me.is(obj)) return player.name
 		else return obj
 	}
-	let ui = null
+	let gui = null
     if (global.TeraProxy.GUIMode) {
-        ui = new SettingsUI(mod, require('./settings_structure'), mod.settings, {height: 350}, {alwaysOnTop: true});
-        ui.on('update', settings => {mod.settings = settings;});
+        gui = new SettingsUI(mod, require('./settings_structure'), mod.settings, { height: 320, resizable: false });
+        gui.on('update', settings => {mod.settings = settings;});
 
         this.destructor = () => {
-            if (ui) {
-                ui.close()
-                ui = null
+            if (gui) {
+                gui.close()
+                gui = null
             }
         };
     }
+	function showGui() {
+		if (!gui) return;
+		gui.show();
+		if (gui.ui.window) {
+			gui.ui.window.webContents.on("did-finish-load", () => {
+				gui.ui.window.webContents.executeJavaScript(
+					"!function(){var e=document.getElementById('close-btn');e.style.cursor='default',e.onclick=function(){window.parent.close()}}();"
+				);
+			});
+		}
+	}
 };
